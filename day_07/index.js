@@ -54,32 +54,69 @@ fs.readFile("input.txt", "utf-8", function(err, data) {
         return acc
     }, map)
 
-    // TODO - do the BFS better..
 
     const target = "shiny gold bag"
     let stack = [];
+    let stackCount = [];
     let visited = []
+    let prevCount = 1;
 
     const mapKeys =  Array.from(res.keys())
-    const bagsThatHoldGold = Array.from(res.keys()).reduce((count, curr) => {
-        const values = Object.keys(map.get(curr));
-        if (values.includes(target) && !visited[curr]) {
+
+    const part2 = Object.keys(map.get(target)).reduce((acc, curr, idx) => {
+        if (!visited[curr]) {
             visited[curr] = true;
             stack.push(curr);
+            stackCount.push(1);
         }
+
         while(stack.length) {
             const temp = stack.pop();
-            ++count
-            mapKeys.map(key => {
-                if (Object.keys(map.get(key)).includes(temp) && !visited[key]) {
-                    visited[key] = true;
-                    stack.push(key);
+            const count = map.get(target)[curr]
+            const stackC = stackCount.pop()
+            let sum = acc;
+            sum =  stackC *  count;
+            console.log(stackC, '*', count, '=', sum, '...pushing', stackC)
+            stackCount.push(sum);
+            acc += sum
+
+            const innerBags = map.get(temp);
+            Object.keys(innerBags).map(bag => {
+                if (!visited[bag]) {
+                    visited[bag] = true;
+                    stack.push(bag)
+                    
                 }
             })
         }
-        return count;
+    
+        return acc;
     }, 0)
-    console.log('%cres', 'color:pink', bagsThatHoldGold);
+
+    console.log('%cres', 'color:pink', part2);
+    
+    // PART 1
+    // TODO - do the BFS better..
+    // const mapKeys =  Array.from(res.keys())
+    // const bagsThatHoldGold = Array.from(res.keys()).reduce((count, curr) => {
+    //     const values = Object.keys(map.get(curr));
+    //     if (values.includes(target) && !visited[curr]) {
+    //         visited[curr] = true;
+    //         stack.push(curr);
+    //     }
+    //     while(stack.length) {
+    //         const temp = stack.pop();
+    //         ++count
+    //         mapKeys.map(key => {
+    //             if (Object.keys(map.get(key)).includes(temp) && !visited[key]) {
+    //                 visited[key] = true;
+    //                 stack.push(key);
+    //             }
+    //         })
+    //     }
+    //     return count;
+    // }, 0)
+    // console.log('%cres', 'color:pink', bagsThatHoldGold);
 })
 
 
