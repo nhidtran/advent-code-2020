@@ -114,3 +114,13 @@ fs.readFile("input.txt", "utf-8", function(err,data) {
     const invalidNumber = findInvalidNumber(items, 0, preamble);
     console.log('>first invalid number with a preamble of 5', invalidNumber);
 })
+
+
+fs.readFile("input2.txt", "utf-8", function(err,data) {
+    let items = data.split(/\r?\n/).map(str => parseInt(str));
+    const preamble = 25;
+
+
+    const invalidNumber = findInvalidNumber(items, 0, preamble);
+    console.log('>first invalid number with a preamble of 25', invalidNumber);
+})
