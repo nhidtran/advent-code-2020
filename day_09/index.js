@@ -87,15 +87,15 @@ function findInvalidNumber(arr = [], idx = 0, preamble) {
     let ptr2 = slice.length - 1;
     
     const numberToCheck = arr[idx + preamble];
-    const diff = numberToCheck - slice[ptr2];
 
     while (ptr1 !== ptr2) {
+        const diff = numberToCheck - slice[ptr2];
         if (slice[ptr1] + slice[ptr2] == numberToCheck) {
             return findInvalidNumber(arr, ++idx, preamble);
         }
         if (slice[ptr1] > diff) {
             --ptr2
-        } else {
+        } else if (slice[ptr1] < diff) {
             ++ptr1;
         }
     }
@@ -122,5 +122,5 @@ fs.readFile("input2.txt", "utf-8", function(err,data) {
 
 
     const invalidNumber = findInvalidNumber(items, 0, preamble);
-    console.log('>first invalid number with a preamble of 25', invalidNumber);
+    console.log('>first invalid number with a preamble of 25 for part1', invalidNumber);
 })
