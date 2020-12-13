@@ -1,4 +1,5 @@
-const fs = require('fs')
+const fs = require('fs');
+const { compileFunction } = require('vm');
 
 /**  Challenge  **/
 // XMAS starts by transmitting a preamble of 25 numbers. 
@@ -37,15 +38,15 @@ Psuedocode
 */
 
 function swap(items, leftIndex, rightIndex){
-    var temp = items[leftIndex];
+    const temp = items[leftIndex];
     items[leftIndex] = items[rightIndex];
     items[rightIndex] = temp;
 }
 
 function partition(items, left, right) {
-    var pivot   = items[right - 1], //middle element
-        i       = left, //left pointer
-        j       = right; //right pointer
+    const pivot   = items[right - 1]
+    let i = left; //left pointer
+    let j = right; //right pointer
     while (i <= j) {
         while (items[i] < pivot) {
             i++;
@@ -78,11 +79,10 @@ function quickSort(items, left, right) {
     return items;
 }
 
-
+ 
 function findInvalidNumber(arr = [], idx = 0, preamble) {
     if (arr.length <= 1) return;
     const slice = quickSort(arr.slice(idx, idx + preamble), 0, preamble - 1)
-    
     let ptr1 = 0;
     let ptr2 = slice.length - 1;
     
@@ -104,12 +104,33 @@ function findInvalidNumber(arr = [], idx = 0, preamble) {
     }
 }
 
+// sliding window brute force. 
+// Expand the window while the sum of the subarray is less than the target
+// Shrink the window while the sum of the subarray is greater than the target
+// return if the tempsum equals to the target sum
+function contiguousArray(arr = [], target) {
+    for(let i = 0; i < arr.length; ++i) {
+        let tempSum = 0;
+        for(let j = 0; j < arr.length; ++j) {
+            tempSum += arr[i + j]
+            if (tempSum > target) {
+                break;
+            }
+            if (tempSum == target) {
+                return arr.slice(i - 1, i + j)
+            }
+
+        }
+    }
+}
+
+
+
 
 
 fs.readFile("input.txt", "utf-8", function(err,data) {
     let items = data.split(/\r?\n/).map(str => parseInt(str));
     const preamble = 5;
-
 
     const invalidNumber = findInvalidNumber(items, 0, preamble);
     console.log('>first invalid number with a preamble of 5', invalidNumber);
@@ -120,7 +141,20 @@ fs.readFile("input2.txt", "utf-8", function(err,data) {
     let items = data.split(/\r?\n/).map(str => parseInt(str));
     const preamble = 25;
 
-
     const invalidNumber = findInvalidNumber(items, 0, preamble);
-    console.log('>first invalid number with a preamble of 25 for part1', invalidNumber);
+    const indexOfInvalid = items.indexOf(invalidNumber)
+    console.log('>first invalid nubmer with a preamble of 25. 9.1:', invalidNumber)
+    console.log('%cindexOfInvalid', 'color:pink', indexOfInvalid);
 })
+
+/**** Part2: Find the contiguous array that adds up to the value provided in part1. Return the sum of the smallest and largest value ******/
+const lookForTarget = 10884537;
+fs.readFile("input2.txt", "utf-8", function(err,data) {
+    let items = data.split(/\r?\n/).map(str => parseInt(str));
+    const res = contiguousArray(items, lookForTarget )
+    console.log('contiguous arr:', quickSort(res, 0, res.length -1))
+    console.log('sum:', res[0] + res[res.length -1])
+
+})
+
+
